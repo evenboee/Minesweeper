@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Minesweeper</title>
+<meta charset="utf-8" />
+<style>
+	html, body {
+		padding: 0;
+		margin: 0;
+	}
+
+	html {
+		height: 100vh;
+	}
+
+	body {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 100%;
+	}
+
+	main {
+		display: flex;
+		flex-direction: column;
+		border: solid 1px #000;
+		padding: 2em 4em;
+		background-color: #f1f1f1;
+		box-shadow: 2px 2px 2px #555 ;
+	}
+
+	#canvas {
+		border: solid 5px #e76f51;
+	}
+
+	.out {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		font-size: 2em;
+		background-color: #2a9d8f;
+		color: #333;
+		border: solid 1px #000;
+	}
+
+	.out div {
+		padding: 8px 5px;
+	}
+
+	#start {
+		width: 100%;
+		margin: 10px auto;
+		border: none;
+		background-color: #263653;
+		font-size: 1.5em;
+		padding: 16px;
+		color: white;
+		border-radius: 4px;
+		cursor: pointer;
+	}
+</style>
+</head>
+<body>
+
+	<main>
+		<div class="out">
+			<div id="time">0</div>
+			<div id="out"></div>
+			<div id="bombs-left"></div>
+		</div>
+		<canvas id="canvas"></canvas>
+		<button id="start">Start</button>
+	</main>
+
+	<!-- <script type="module" src="app.js"></script> -->
+	<script src="index.js"></script>
+
+</body>
+</html>
