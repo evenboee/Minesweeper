@@ -1,9 +1,17 @@
-const HEIGHT = 8;
-const WIDTH = 8;
-const BOMBS = 10;// Math.floor(WIDTH * HEIGHT / 4);
-
-export {
-    HEIGHT,
-    WIDTH,
-    BOMBS
-};
+export const MODES = {
+    BEGINNER: {
+        WIDTH: 8,
+        HEIGHT: 8,
+        BOMBS: 10,
+    },
+    INTERMEDIATE: {
+        WIDTH: 16,
+        HEIGHT: 16,
+        BOMBS: 40,
+    },
+    EXPERT: {
+        WIDTH: 31,
+        HEIGHT: 16,
+        BOMBS: 99,
+    }
+}

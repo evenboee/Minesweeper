@@ -1,19 +1,29 @@
-import { WIDTH, HEIGHT, BOMBS } from './constants';
+import { MODES } from './constants';
 import { initBoard, open, flagg, win, openBombs, getCountFlagged } from './game';
 
 const out = document.getElementById('out');
 const outTime = document.getElementById('time');
 const start = document.getElementById('start');
 const bombsLeft = document.getElementById('bombs-left');
+const inpMode = document.getElementById('mode');
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
-const constrainer = Math.min(window.innerWidth, window.innerHeight);
-const scl = 0.5 * constrainer / WIDTH;
+let mode = MODES['BEGINNER'];
+console.log(mode);
+let scl = 0;
 
-canvas.width = WIDTH * scl;
-canvas.height = HEIGHT * scl;
+const setCanvas = () => {
+	const d = 0.6;
+	scl = d * window.innerHeight / mode.HEIGHT;
+	if (scl * mode.WIDTH > window.innerWidth) {
+		scl = d * window.innerWidth / mode.WIDTH;
+	}
+
+	canvas.width = mode.WIDTH * scl;
+	canvas.height = mode.HEIGHT * scl;
+}
 
 const colors = ['blue', 'green', 'red', 'purple', 'maroon', 'turquoise', 'black', 'gray'];
 
@@ -23,8 +33,7 @@ const drawGame = (board) => {
 	ctx.textBaseline = 'middle';
 
 	ctx.fillStyle = "#bcbcbc";
-	ctx.fillRect(0, 0, WIDTH * scl, HEIGHT * scl);
-
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
 	for (let y in board) {
 		for (let x in board[y]) {
 			const cell = board[y][x];
@@ -59,9 +68,9 @@ const drawGame = (board) => {
 	ctx.fillStyle = "#000";
 	for (let y in board) {
 		for (let x in board[y]) {
-			ctx.fillRect(0, x * scl, WIDTH * scl, 1);
+			ctx.fillRect(x * scl, 0, 1, canvas.height);			
 		}
-		ctx.fillRect(y * scl, 0, 1, HEIGHT * scl);
+		ctx.fillRect(0, y * scl, canvas.width, 1);
 	}
 }
 
@@ -71,7 +80,7 @@ let time = 0;
 let running = null;
 
 const updateBombCount = () => {
-	bombsLeft.innerText = BOMBS - getCountFlagged(board) + ' 💣';
+	bombsLeft.innerText = mode.BOMBS - getCountFlagged(board) + ' 💣';
 }
 
 const updateTime = () => {
@@ -97,7 +106,8 @@ const reset = () => {
 	finished = false;
 	time = 0;
 	stopTimer();
-	board = initBoard(WIDTH, HEIGHT, BOMBS);
+	setCanvas();
+	board = initBoard(mode.WIDTH, mode.HEIGHT, mode.BOMBS);
 	updateBombCount();
 	drawGame(board);
 }
@@ -138,8 +148,10 @@ const getCoords = (event) => {
 	const rect = event.target.getBoundingClientRect();
 	let x = Math.floor((event.clientX - rect.left) / scl);
 	let y = Math.floor((event.clientY - rect.top) / scl);
-	if (x >= WIDTH) x = WIDTH - 1;
-	if (y >= HEIGHT) y = HEIGHT - 1;
+	if (x >= mode.WIDTH) x = mode.WIDTH - 1;
+	if (y >= mode.HEIGHT) y = mode.HEIGHT - 1;
+	if (x < 0) x = 0;
+	if (y < 0) y = 0;
 	return [x, y];
 }
 
@@ -156,3 +168,13 @@ start.addEventListener('click', event => {
 });
 
 canvas.oncontextmenu = () => false;
+
+inpMode.addEventListener('change', event => {
+	const newMode = MODES[event.target.value];
+	if (!newMode) {
+		alert('Did not find mode');
+		return;
+	}
+	mode = newMode;
+	reset();
+});
