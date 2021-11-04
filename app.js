@@ -163,10 +163,19 @@ const finishWithMessage = (message) => {
 }
 
 const clicked = (x, y) => {
+	let firstClick = false;
 	if (finished) return;
-	if (!running) {startTimer();}
+	if (!running) {
+		firstClick = true;
+		startTimer();
+	}
 	const loss = open(board, x, y);
 	if (loss) {
+		if (firstClick) {
+			reset();
+			clicked(x, y);
+			return
+		}
 		finishWithMessage('Boom! You loose');
 		openBombs(board);
 	}
@@ -179,8 +188,8 @@ const clicked = (x, y) => {
 }
 
 const flagged = (x, y) => {
-	if (finished) return;
-	if (!running) {startTimer();}
+	if (finished || !running) return;
+	// if (!running) {startTimer();}
 	if (flagg(board, x, y)) {
 		updateBombCount();
 		drawGame(board)
