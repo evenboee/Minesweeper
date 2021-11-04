@@ -6,23 +6,64 @@ const outTime = document.getElementById('time');
 const start = document.getElementById('start');
 const bombsLeft = document.getElementById('bombs-left');
 const inpMode = document.getElementById('mode');
+const hsBeginner = document.getElementById('hs-beginner');
+const hsIntermadiate = document.getElementById('hs-intermediate');
+const hsExpert = document.getElementById('hs-expert');
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
-let mode = MODES['BEGINNER'];
-console.log(mode);
+let highScore = {
+	'BEGINNER': 999,
+	'INTERMEDIATE': 999,
+	'EXPERT': 999,
+};
+let ls = null;
+try {
+	ls = window.localStorage;
+} catch (_) {}
+
+const updateHighScoreOutput = () => {
+	hsBeginner.innerText = highScore['BEGINNER'];
+	hsIntermadiate.innerText = highScore['INTERMEDIATE'];
+	hsExpert.innerText = highScore['EXPERT'];
+}
+
+const loadHighScore = () => {
+	if (ls) {
+		const loadedHS = ls.getItem('highScore');
+		if (loadedHS) {
+			highScore = JSON.parse(loadedHS);
+		}
+	}
+	updateHighScoreOutput();
+}
+
+loadHighScore();
+
+const setHighScore = (m, score) => {
+	if (ls) {
+		if (highScore[m] > score) {
+			highScore[m] = score;
+			updateHighScoreOutput();
+			ls.setItem('highScore', JSON.stringify(highScore));
+		}
+	}
+}
+
+let mode = 'BEGINNER';
 let scl = 0;
 
 const setCanvas = () => {
+	const m = MODES[mode];
 	const d = 0.6;
-	scl = d * window.innerHeight / mode.HEIGHT;
-	if (scl * mode.WIDTH > window.innerWidth) {
-		scl = d * window.innerWidth / mode.WIDTH;
+	scl = d * window.innerHeight / m.HEIGHT;
+	if (scl * m.WIDTH > window.innerWidth) {
+		scl = d * window.innerWidth / m.WIDTH;
 	}
 
-	canvas.width = mode.WIDTH * scl;
-	canvas.height = mode.HEIGHT * scl;
+	canvas.width = m.WIDTH * scl;
+	canvas.height = m.HEIGHT * scl;
 }
 
 const colors = ['blue', 'green', 'red', 'purple', 'maroon', 'turquoise', 'black', 'gray'];
@@ -80,7 +121,7 @@ let time = 0;
 let running = null;
 
 const updateBombCount = () => {
-	bombsLeft.innerText = mode.BOMBS - getCountFlagged(board) + ' 💣';
+	bombsLeft.innerText = MODES[mode].BOMBS - getCountFlagged(board) + ' 💣';
 }
 
 const updateTime = () => {
@@ -107,7 +148,8 @@ const reset = () => {
 	time = 0;
 	stopTimer();
 	setCanvas();
-	board = initBoard(mode.WIDTH, mode.HEIGHT, mode.BOMBS);
+	const m = MODES[mode];
+	board = initBoard(m.WIDTH, m.HEIGHT, m.BOMBS);
 	updateBombCount();
 	drawGame(board);
 }
@@ -131,6 +173,7 @@ const clicked = (x, y) => {
 	if (win(board)) {
 		finishWithMessage('You win');
 		updateBombCount();
+		setHighScore(mode, time);
 	}
 	drawGame(board);
 }
@@ -148,8 +191,9 @@ const getCoords = (event) => {
 	const rect = event.target.getBoundingClientRect();
 	let x = Math.floor((event.clientX - rect.left) / scl);
 	let y = Math.floor((event.clientY - rect.top) / scl);
-	if (x >= mode.WIDTH) x = mode.WIDTH - 1;
-	if (y >= mode.HEIGHT) y = mode.HEIGHT - 1;
+	const m = MODES[mode];
+	if (x >= m.WIDTH) x = m.WIDTH - 1;
+	if (y >= m.HEIGHT) y = m.HEIGHT - 1;
 	if (x < 0) x = 0;
 	if (y < 0) y = 0;
 	return [x, y];
@@ -170,8 +214,8 @@ start.addEventListener('click', event => {
 canvas.oncontextmenu = () => false;
 
 inpMode.addEventListener('change', event => {
-	const newMode = MODES[event.target.value];
-	if (!newMode) {
+	const newMode = event.target.value;
+	if (!(newMode in MODES)) {
 		alert('Did not find mode');
 		return;
 	}

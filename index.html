@@ -65,6 +65,7 @@
 		color: white;
 		border-radius: 4px;
 		cursor: pointer;
+		user-select: none;
 	}
 
 	#mode {
@@ -76,7 +77,17 @@
 		border-radius: 4px;
 		outline: none;
 	}
+	.high-score-bar {
+		width: 100%;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+	}
 
+	.high-score-bar-element {
+		font-size: 1.2em;
+		font-weight: bold;
+	}
 </style>
 </head>
 <body>
@@ -96,10 +107,14 @@
 				<option>EXPERT</option>
 			</select>
 		</div>
+		<div class="high-score-bar">
+			<div class="high-score-bar-element">B: <span id="hs-beginner"></span></div>
+			<div class="high-score-bar-element">I: <span id="hs-intermediate"></span></div>
+			<div class="high-score-bar-element">E: <span id="hs-expert"></span></div>
+		</div>
+
 	</main>
 
 	<script type="module" src="app.js"></script>
-	<!-- <script src="index.js"></script> -->
-
 </body>
 </html>
