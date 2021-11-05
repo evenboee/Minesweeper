@@ -4,6 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
+    "start": "npm run build",
     "build": "webpack build",
     "heroku-prebuild": "npm install",
     "dev": "snowpack dev"
