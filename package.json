@@ -4,7 +4,9 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "snowpack dev"
+    "start": "snowpack build",
+    "heroku-prebuild": "npm install",
+    "dev": "snowpack dev"
   },
   "keywords": [],
   "author": "",
