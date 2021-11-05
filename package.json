@@ -4,7 +4,7 @@
   "description": "Minesweeper",
   "main": "app.js",
   "scripts": {
-    "start": "npm install",
+    "start": "node index.js",
     "build": "webpack build",
     "heroku-prebuild": "npm install",
     "dev": "snowpack dev"
@@ -13,11 +13,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "express": "^4.17.1",
     "snowpack": "^3.8.8"
   },
   "devDependencies": {
     "webpack": "^5.61.0",
     "webpack-cli": "^4.9.1"
   },
-  "repository": {"url": "https://github.com/evenboee/Minesweeper"}
+  "repository": {
+    "url": "https://github.com/evenboee/Minesweeper"
+  }
 }
