@@ -171,7 +171,7 @@ const clicked = (x, y) => {
 	}
 	const loss = open(board, x, y);
 	if (loss) {
-		if (firstClick) {
+		if (firstClick) { // Prevents dying on first click
 			reset();
 			clicked(x, y);
 			return
@@ -189,7 +189,6 @@ const clicked = (x, y) => {
 
 const flagged = (x, y) => {
 	if (finished || !running) return;
-	// if (!running) {startTimer();}
 	if (flagg(board, x, y)) {
 		updateBombCount();
 		drawGame(board)
@@ -220,7 +219,7 @@ start.addEventListener('click', event => {
 	reset();
 });
 
-canvas.oncontextmenu = () => false;
+canvas.oncontextmenu = () => false; // Prevent right click menu on canvas
 
 inpMode.addEventListener('change', event => {
 	const newMode = event.target.value;

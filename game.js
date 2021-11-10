@@ -1,3 +1,4 @@
+// Returns a list of all the neighbors of a cell
 const getNeighbors = (board, col, row) => {
     let xMin = (col - 1) < 0 ? 0:col-1;
     let xMax = ((col + 1) >= board[0].length) ? (board[0].length - 1):(col+1);
@@ -16,7 +17,7 @@ const getNeighbors = (board, col, row) => {
 const placeBombs = (board, n) => {
     for (let i = 0; i < n; i++) {
         const spot = [0, 0];
-        do {
+        do { // Makes sure bombs are placed in unique spot
             spot[1] = Math.floor(Math.random() * board.length);
             spot[0] = Math.floor(Math.random() * board[0].length);
         } while(board[spot[1]][spot[0]].bomb);
@@ -24,6 +25,7 @@ const placeBombs = (board, n) => {
     }
 }
 
+// Sets neighbors field of all cells in board
 const countNeighbors = (board) => {
     for (let y = 0; y < board.length; y++) {
         for (let x = 0; x < board[y].length; x++) {
@@ -32,6 +34,7 @@ const countNeighbors = (board) => {
     }
 }
 
+// Makes board. Places bombs and counts neighbors of each cell
 const initBoard = (w, h, n) => {
     if (w <= 0 || h <= 0) throw Error('Width and height must be >1');
     const board = [];
@@ -47,6 +50,8 @@ const initBoard = (w, h, n) => {
     return board;
 }
 
+// Returns if the player wins or not. If win => flaggs all bombs
+// Checks that all spaces without bomb is shown
 const win = (board) => {
     let max = board.length * board[0].length;
     let cnt = 0;
@@ -60,7 +65,7 @@ const win = (board) => {
             }
         }
     }
-    if (cnt === max) {
+    if (cnt === max) { // If win => flagg all
         for (let y = 0; y < board.length; y++) {
             for (let x = 0; x < board[0].length; x++) {
                 if (board[y][x].bomb && !board[y][x].show) {
@@ -77,13 +82,13 @@ const win = (board) => {
 const open = (board, x, y) => {
     const cell = board[y][x];
 
-    if (cell.show) {
+    if (cell.show) { // If opened a cell that is already open => "cording"
         const neighbors = getNeighbors(board, x, y);
         const count = neighbors.filter(neighbor => neighbor.flagged).length
-        if (count === cell.neighbors) {
+        if (count === cell.neighbors) { // Only do cording of right number of neighbors is marked
             for (let neighbor of neighbors) {
-                if (!neighbor.flagged && !neighbor.show) {
-                    if (open(board, neighbor.x, neighbor.y)) {
+                if (!neighbor.flagged && !neighbor.show) { // !show to avoid infinite loop
+                    if (open(board, neighbor.x, neighbor.y)) { // Recursive call. Only stop if a bomb is opened
                         return true;
                     }
                 }
@@ -92,11 +97,13 @@ const open = (board, x, y) => {
         return false;
     }
 
+    // Open normally
 	if (!cell.flagged) {
-		board[y][x].show = true;
 		if (board[y][x].bomb) {return true;}
+        board[y][x].show = true;
 	}
 
+    // If no neighbors => open recursively
     if (cell.neighbors === 0) {
         getNeighbors(board, x, y).forEach(neighbor => {
             open(board, neighbor.x, neighbor.y);
@@ -106,6 +113,7 @@ const open = (board, x, y) => {
     return false;
 }
 
+// Sets cell.show=true for all cells where cell.bomb==true
 const openBombs = (board) => {
     for (let y = 0; y < board.length; y++) {
         for (let x = 0; x < board[0].length; x++) {
@@ -114,7 +122,7 @@ const openBombs = (board) => {
     }
 }
 
-// Returns if something was changed
+// Returns if something was changed or not
 const flagg = (board, x, y) => {
     if (!board[y][x].show) {
 		board[y][x].flagged = !board[y][x].flagged;
@@ -123,6 +131,7 @@ const flagg = (board, x, y) => {
     return false;
 }
 
+// Returns how many cells have flagged=true
 const getCountFlagged = (board) => {
     let cnt = 0;
     for (let y = 0; y < board.length; y++) {

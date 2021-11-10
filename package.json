@@ -7,7 +7,7 @@
     "start": "node index.js",
     "build": "webpack build",
     "heroku-prebuild": "npm install",
-    "dev": "snowpack dev"
+    "dev": "webpack build --watch"
   },
   "keywords": [],
   "author": "",
